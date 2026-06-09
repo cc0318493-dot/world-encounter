@@ -29,13 +29,27 @@ export default function ReaderPage() {
         .then((text) => {
           console.log(text);
 
-          const chapterRegex = /^第[^\n]{0,50}回[^\n]*$/gm;
+          let matches: string[] = [];
+          let parts: string[] = [];
 
-          const matches = (text.match(chapterRegex) || []).filter(
-            (title) => title.length < 35,
-          );
+          if (bookData.id === "dream-of-red-chamber") {
+            const sections = text.split("<chapter>");
 
-          const parts = text.split(chapterRegex);
+            matches = sections.slice(1).map((section) => {
+              const firstLine = section.trim().split("\n")[0];
+              return firstLine || "";
+            });
+
+            parts = sections;
+          } else {
+            const chapterRegex = /^第[^\n]{0,50}回[^\n]*$/gm;
+
+            matches = (text.match(chapterRegex) || []).filter(
+              (title) => title.length < 35,
+            );
+
+            parts = text.split(chapterRegex);
+          }
 
           setChapterTitles(matches);
           setChapters(parts);
