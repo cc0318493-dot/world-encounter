@@ -22,6 +22,13 @@ export default function ReaderPage() {
 
   useEffect(() => {
     if (!bookData) return;
+    const progressKey = `reading-progress-${bookData.id}`;
+
+    const savedChapter = localStorage.getItem(progressKey);
+
+    if (savedChapter) {
+      setCurrentChapter(Number(savedChapter));
+    }
 
     if (bookData.format === "txt") {
       fetch(bookData.source)
@@ -62,6 +69,13 @@ export default function ReaderPage() {
         });
     }
   }, [bookData]);
+  useEffect(() => {
+    if (!bookData) return;
+
+    const progressKey = `reading-progress-${bookData.id}`;
+
+    localStorage.setItem(progressKey, currentChapter.toString());
+  }, [currentChapter, bookData]);
 
   if (!bookData) {
     return (
